@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
@@ -22,14 +24,17 @@ namespace Project3
         static char[] class1ops = ['^']; // this one's an array for consistency
         Dictionary<string, double> variables = new Dictionary<string, double>();
 
-        public static void SaveVars(Dictionary<string, double> vars, string filepath)
+        // with help from https://www.webdevtutor.net/blog/c-sharp-write-dictionary-to-file
+        public static void SaveVars(Dictionary<string, double> vars)
         {
-            using StreamReader sr = new StreamReader(filepath);
-            for (int i = 0; i < vars.Count; i++)
+            using (StreamWriter writer = new StreamWriter("variables.txt"))
             {
-                
-
-            }
+                foreach (var variable in vars)
+                {
+                    writer.WriteLine($"{variable.Key}: {variable.Value}");
+                }
+            };
+            Console.WriteLine("Success!");
         }
         // check to see if a string has specific characters
         public static bool CheckForOperators (string input)
@@ -210,7 +215,8 @@ namespace Project3
                 // checking for extra commands
                 if (input == "save")
                 {
-
+                    SaveVars(variables);
+                    continue;
                 }
                 if (input == "quit" || input == "QUIT")
                 {
